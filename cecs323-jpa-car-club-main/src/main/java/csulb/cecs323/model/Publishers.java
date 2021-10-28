@@ -1,6 +1,8 @@
 package csulb.cecs323.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Publishers {
@@ -8,6 +10,8 @@ public class Publishers {
 //
 //    @Column(nullable = false, length = 13)
 //    private int isbn;
+    @OneToMany(cascade = CascadeType.PERSIST)
+    private List<Books> booksList = new ArrayList<>();
 
     @Id
     @Column(nullable = false, length = 80)
@@ -26,6 +30,14 @@ public class Publishers {
         this.name = name;
         this.phone = phone;
         this.email = email;
+    }
+
+    public List<Books> getBooksList() {
+        return booksList;
+    }
+
+    public void setBooksList(List<Books> booksList) {
+        this.booksList = booksList;
     }
 
     public String getName() {
