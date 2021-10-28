@@ -10,13 +10,13 @@ public class Publishers {
 //    private int isbn;
 
     @Id
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 80)
     private String name;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 24)
     private String phone;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, length = 80)
     private String email;
 
     public Publishers() {

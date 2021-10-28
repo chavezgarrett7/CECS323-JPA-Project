@@ -145,7 +145,7 @@ public class BookDriver {
    }
 
    private static boolean isValidName(String name) {
-      if(name.length() >= 30 || name.isEmpty()) {
+      if(name.length() >= 80 || name.isEmpty()) {
          return false;
       }
       return true;
@@ -159,8 +159,8 @@ public class BookDriver {
       int rightParenthCount = 0;
 
       if (phone != null) {
-         if(phone.length() < 10 || phone.length() > 30){
-            System.out.println("A phone number includes at least 10 digits or you entered one that is too long");
+         if(phone.length() < 10 || phone.length() > 24){
+            System.out.println("A phone number includes at least 10 digits or you have entered one that is too long");
             return false;
          }
          for (char c : phone.toCharArray()) {
@@ -203,7 +203,7 @@ public class BookDriver {
          return false;
       }
 
-      if(email.length() > 64){
+      if(email.length() > 80){
          System.out.println("Email must be less than 64 characters");
          return false;
       }
