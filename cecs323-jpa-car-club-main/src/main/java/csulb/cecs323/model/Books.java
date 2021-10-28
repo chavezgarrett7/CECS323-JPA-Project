@@ -5,6 +5,7 @@ import java.util.Set;
 
 @Entity
 public class Books {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(nullable = false, length = 20)
     private String ISBN;
@@ -21,20 +22,19 @@ public class Books {
     @Column(nullable = false, length = 4)
     private int year_published;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="name", referencedColumnName = "name")
     private Publishers publisher;
 
-    @ManyToOne
-    @JoinColumn(name="authoring_entity_name", referencedColumnName = "email")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="authoring_entity_name", referencedColumnName = "authoring_entity_type")
     private Authoring_entities authoring_entity;
 
     public Books() {
 
     }//end of default constructor
 
-    public Books(String ISBN, String title, int year_published, Publishers publisher, Authoring_entities authoring_entity) {
-        this.ISBN = ISBN;
+    public Books(String title, int year_published, Publishers publisher, Authoring_entities authoring_entity) {
         this.title = title;
         this.year_published = year_published;
         this.publisher = publisher;

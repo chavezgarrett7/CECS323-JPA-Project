@@ -6,11 +6,7 @@ import java.util.List;
 
 @Entity
 public class Publishers {
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//
-//    @Column(nullable = false, length = 13)
-//    private int isbn;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publisher_name")
     private List<Books> booksList = new ArrayList<>();
 
     @Id

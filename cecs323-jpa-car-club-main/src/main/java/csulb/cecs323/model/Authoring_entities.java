@@ -22,8 +22,20 @@ public class Authoring_entities {
     @Column()
     private int year_formed;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    private List<Authoring_entities> authoring_entitiesList = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "authoring_entity_name")
+    private List<Books> booksList = new ArrayList<>();
+
+    public Authoring_entities() {
+
+    }
+
+    public Authoring_entities(String email, String authoring_entity_type, String name, String head_writer, int year_formed) {
+        this.email = email;
+        this.authoring_entity_type = authoring_entity_type;
+        this. name = name;
+        this.head_writer = head_writer;
+        this.year_formed = year_formed;
+    }
 
     public String getEmail() {
         return email;
@@ -65,11 +77,11 @@ public class Authoring_entities {
         this.year_formed = year_formed;
     }
 
-    public List<Authoring_entities> getAuthoring_entitiesList() {
-        return authoring_entitiesList;
+    public List<Books> getBooksList() {
+        return booksList;
     }
 
-    public void setAuthoring_entitiesList(List<Authoring_entities> authoring_entitiesList) {
-        this.authoring_entitiesList = authoring_entitiesList;
+    public void setBooksList(List<Books> booksList) {
+        this.booksList = booksList;
     }
 }
