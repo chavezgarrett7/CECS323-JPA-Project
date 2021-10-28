@@ -1,9 +1,8 @@
 package csulb.cecs323.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedNativeQuery;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Authoring_entities {
@@ -22,6 +21,9 @@ public class Authoring_entities {
 
     @Column()
     private int year_formed;
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    private List<Authoring_entities> authoring_entitiesList = new ArrayList<>();
 
     public String getEmail() {
         return email;
@@ -61,5 +63,13 @@ public class Authoring_entities {
 
     public void setYear_formed(int year_formed) {
         this.year_formed = year_formed;
+    }
+
+    public List<Authoring_entities> getAuthoring_entitiesList() {
+        return authoring_entitiesList;
+    }
+
+    public void setAuthoring_entitiesList(List<Authoring_entities> authoring_entitiesList) {
+        this.authoring_entitiesList = authoring_entitiesList;
     }
 }
