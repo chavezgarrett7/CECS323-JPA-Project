@@ -5,6 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "Authoring_entities.count",
+                query = "SELECT count(*) " + "FROM AUTHORING_ENTITIES " + "WHERE email = ?"),
+        @NamedNativeQuery(name = "Authoring_entities.all",
+                query = "SELECT * " + "FROM AUTHORING_ENTITIES " + "ORDER BY NAME",
+                resultClass = Authoring_entities.class)
+})
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "authoring_entity_type", discriminatorType = DiscriminatorType.STRING)
+
 public class Authoring_entities {
     @Id
     @Column(nullable = false, length = 30)
@@ -32,9 +42,14 @@ public class Authoring_entities {
     public Authoring_entities(String email, String authoring_entity_type, String name, String head_writer, int year_formed) {
         this.email = email;
         this.authoring_entity_type = authoring_entity_type;
-        this. name = name;
+        this.name = name;
         this.head_writer = head_writer;
         this.year_formed = year_formed;
+    }
+
+    public Authoring_entities(String name, String email) {
+        this.name = name;
+        this.email = email;
     }
 
     public String getEmail() {
@@ -83,5 +98,21 @@ public class Authoring_entities {
 
     public void setBooksList(List<Books> booksList) {
         this.booksList = booksList;
+    }
+
+    @Override
+    public String toString() {
+        return "Authoring_entities{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    // TODO: Figure out how to Implement
+    protected void addAd_hoc_teams(Ad_hoc_teams ad_hoc_teams) {
+    }
+
+    // TODO: Figure out how to Implement
+    protected void removeAd_hoc_teams(Ad_hoc_teams ad_hoc_teams) {
     }
 }

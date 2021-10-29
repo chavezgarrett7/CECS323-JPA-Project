@@ -109,6 +109,14 @@ public class BookDriver {
       }
    } // End of createEntity member method
 
+   public void menu() {
+      System.out.println("Welcome to the Books database");
+      System.out.println("What would you like to do? (Choose an option)");
+      System.out.println("1. Add a new book \n2. Add a new publisher \n3. List information about a book");
+      System.out.println("4. List information about a publisher \n5.List information about a writing group");
+      System.out.println("6.Delete a book \n7. Update a book \n8. List all primary keys within the database \n9. Quit");
+   }
+
    public static Publishers newPublisher(){
       Publishers publisher = new Publishers();
       System.out.println("Enter a name for the new publisher (Less than 30 Characters): ");
