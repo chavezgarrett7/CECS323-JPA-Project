@@ -85,23 +85,33 @@ public class BookDriver {
 
          switch(choice){
             case 1:
+               System.out.println("\nPlease fill out the following prompts to add a new Book to the database");
                booksList.add(addNewBook());
                bookdriver.createEntity(booksList);
+               break;
             case 2:
+               System.out.println("\nPlease fill out the following prompts to add a new Publisher to the database");
                publishersList.add(addNewPublisher());
                bookdriver.createEntity(publishersList);
+               break;
             case 3:
                displayBookInfo();
+               break;
             case 4:
                displayPublisherInfo();
+               break;
             case 5:
                displayWritingGroupInfo();
+               break;
             case 6:
                deleteBook();
+               break;
             case 7:
                updateBook();
+               break;
             case 8:
                displayAllPrimaryKeys();
+               break;
             case 9:
                break;
          }
@@ -136,52 +146,76 @@ public class BookDriver {
       }
    } // End of createEntity member method
 
-   private static int menu() {
-      System.out.println("Welcome to the Books database");
-      System.out.println("What would you like to do? (Choose an option)");
-      System.out.println("1. Add a new book \n2. Add a new publisher \n3. List information about a book");
-      System.out.println("4. List information about a publisher \n5.List information about a writing group");
-      System.out.println("6.Delete a book \n7. Update a book \n8. List all primary keys within the database \n9. Quit");
-      int choice = 0;
+   // =========================================================
+   // MENU FUNCTIONS FOR INPUTS BELOW
+   // =========================================================
 
-      if(!scan.hasNextInt()){
-         System.out.println("ERROR: Incorrect input. Please enter a valid value for your choice (1-9): ");
-      }
-      else{
-         choice = scan.nextInt();
+   private static int menu() {
+      System.out.println("\nWelcome to the Books database");
+      System.out.println("What would you like to do? (Choose an option)");
+      System.out.println("\t1. Add a new book \n\t2. Add a new publisher \n\t3. List information about a book");
+      System.out.println("\t4. List information about a publisher \n\t5. List information about a writing group");
+      System.out.println("\t6. Delete a book \n\t7. Update a book \n\t8. List all primary keys within the database \n\t9. Quit");
+      System.out.print("Your selection: ");
+      String choiceString = scan.nextLine();
+      int choice;
+      // = acquireChoice()
+      try{
+         choice = Integer.parseInt(choiceString);
+      }catch (NumberFormatException e){
+         System.out.println("\nERROR: Incorrect input. Please enter a valid integer value for your choice (1-9)");
+         return menu();
       }
 
       if(!isValidChoice(choice)){
-         System.out.println("ERROR: Incorrect input. Please enter a valid value for your choice (1-9): ");
+         System.out.println("\nERROR: Incorrect input. Please enter a valid integer value for your choice (1-9)");
          return menu();
       }
 
       return choice;
    }
 
-   private static Boolean isValidChoice(int choice){
-      if(choice >= 9 || choice <= 0){
-         return false;
+   private static int acquireChoice() {
+      int choice;
+
+      if(!scan.hasNextInt()){
+         System.out.println("ERROR: Invalid year. Please enter digits to represent the year the book was published:");
+         System.out.println("Please enter the publication year (YYYY):");
+         return acquireYear();
+      }
+      choice = scan.nextInt();
+      int length = String.valueOf(choice).length();
+      if(length != 4){
+         System.out.println("ERROR: Invalid year. Year must be of the form YYYY");
+         System.out.println("Please enter the publication year (YYYY):");
+         return acquireYear();
       }
 
-      return true;
+      return choice;
    }
 
    // TODO: Implement all these functions
-   // TODO: Implement relationship between new book and authoring_entity
+   // TODO: Implement relationship between new book and authoring_entity, and new book and Publisher
    private static Books addNewBook() {
       Books book = new Books();
 
-      System.out.println("Please enter the title of this new book:");
+      System.out.print("Please enter the title of this new book: ");
       String title = scan.nextLine();
       while(!isValidTitle(title)){
          System.out.println("ERROR: Invalid title. Title must be less than 64 characters.");
-         System.out.println("Please enter the title of this new book:");
+         System.out.print("Please enter the title of this new book: ");
          title = scan.nextLine();
       }
 
-      return new Books();
+      book.setTitle(title);
+
+      System.out.print("Please enter the publication year (YYYY): ");
+      int year = acquireYear();
+      book.setYear_published(year);
+
+      return book;
    }
+
 
    /* TODO: Make sure name is not used twice (primary key constraint) and add code to show relationship
       TODO: between a publisher and their book(s). Change error outputs to reflect what the error is */
@@ -192,31 +226,31 @@ public class BookDriver {
 
       while(!isValidName(name)){
          System.out.println("ERROR: Invalid input. Try again...");
-         System.out.println("Enter a name for the new publisher (Less than 30 Characters): ");
+         System.out.print("Enter a name for the new publisher (Less than 30 Characters): ");
          name = scan.nextLine();
       }
 
       publisher.setName(name);
 
-      System.out.println("Enter a phone number for the publisher (At least 10 digits):");
+      System.out.print("Enter a phone number for the publisher (At least 10 digits):");
       String phone = scan.next();
 
       // Regular expression to see if string contains integers
       while(!isValidPhone(phone)){
-         System.out.println("ERROR: Invalid input. Try again...");
-         System.out.println("Enter a phone number for the publisher (At least 10 digits):");
+         System.out.println("\nERROR: Invalid input. Try again...");
+         System.out.print("Enter a phone number for the publisher (At least 10 digits): ");
          phone = scan.next();
       }
 
       publisher.setPhone(phone);
 
-      System.out.println("Enter an email for the publisher (At most 64 characters):");
+      System.out.print("Enter an email for the publisher (At most 64 characters): ");
       String email = scan.next();
 
       // Regular expression to see if string contains integers
       while(!isValidEmail(email)){
-         System.out.println("ERROR: Invalid input. Try again...");
-         System.out.println("Enter an email for the publisher (At most 64 characters):");
+         System.out.println("\nERROR: Invalid input. Try again...");
+         System.out.print("Enter an email for the publisher (At most 64 characters): ");
          email = scan.next();
       }
       publisher.setEmail(email);
@@ -241,6 +275,45 @@ public class BookDriver {
    private static void displayAllPrimaryKeys() {
    }
 
+   // =========================================================
+   // VALIDATION FUNCTIONS FOR INPUTS BELOW
+   // =========================================================
+
+   private static Boolean isValidChoice(int choice){
+      if(choice >= 10 || choice <= 0){
+         return false;
+      }
+      return true;
+   }
+
+   private static boolean isValidTitle(String title) {
+      if(title.length() >= 64 || title.isEmpty()) {
+         return false;
+      }
+      return true;
+   }
+
+   private static int acquireYear() {
+      String yearString = scan.nextLine();
+      int year;
+
+      try{
+         year = Integer.parseInt(yearString);
+      }catch (NumberFormatException e){
+         System.out.println("\nERROR: Invalid year. Year must be of the form YYYY, where the Y represents a digit");
+         System.out.print("Please enter the publication year (YYYY): ");
+         return acquireYear();
+      }
+
+      int length = String.valueOf(year).length();
+      if(length != 4){
+         System.out.println("\nERROR: Invalid year. Year must be of the form YYYY");
+         System.out.print("Please enter the publication year (YYYY): ");
+         return acquireYear();
+      }
+
+      return year;
+   }
 
    private static boolean isValidName(String name) {
       if(name.length() >= 80 || name.isEmpty()) {
@@ -317,10 +390,6 @@ public class BookDriver {
       }
 
       return true;
-   }
-
-   private static boolean isValidTitle(String title) {
-
    }
 
 } // End of CarClub class

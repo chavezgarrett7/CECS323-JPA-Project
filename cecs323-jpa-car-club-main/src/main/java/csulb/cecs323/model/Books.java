@@ -10,13 +10,15 @@ public class Books {
     @Column(nullable = false, length = 20)
     private String ISBN;
 
-    @Column(nullable = false, length = 30)
+    @ManyToOne(targetEntity = Authoring_entities.class)
+    @JoinColumn(name="authoring_entity_name", referencedColumnName = "authoring_entity_type")
     private String authoring_entity_name;
 
     @Column(nullable = false, length = 64)
     private String title;
 
-    @Column(nullable = false, length = 80)
+    @ManyToOne(targetEntity = Publishers.class)
+    @JoinColumn(name="publisher_name", referencedColumnName = "name")
     private String publisher_name;
 
     @Column(nullable = false, length = 4)
@@ -26,10 +28,6 @@ public class Books {
     @JoinColumn(name="name", referencedColumnName = "name")
     private Publishers publisher;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="authoring_entity_name", referencedColumnName = "authoring_entity_type")
-    private Authoring_entities authoring_entity;
-
     public Books() {
 
     }//end of default constructor
@@ -38,7 +36,6 @@ public class Books {
         this.title = title;
         this.year_published = year_published;
         this.publisher = publisher;
-        this.authoring_entity = authoring_entity;
         publisher_name = publisher.getName();
         authoring_entity_name = authoring_entity.getName();
     }//end of overloaded constructor
@@ -89,13 +86,5 @@ public class Books {
 
     public void setPublisher(Publishers publisher) {
         this.publisher = publisher;
-    }
-
-    public Authoring_entities getAuthoring_entity() {
-        return authoring_entity;
-    }
-
-    public void setAuthoring_entity(Authoring_entities authoring_entity) {
-        this.authoring_entity = authoring_entity;
     }
 }
