@@ -24,20 +24,13 @@ public class Books {
     @Column(nullable = false, length = 4)
     private int year_published;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="name", referencedColumnName = "name")
-    private Publishers publisher;
-
     public Books() {
 
     }//end of default constructor
 
-    public Books(String title, int year_published, Publishers publisher, Authoring_entities authoring_entity) {
+    public Books(String title, int year_published) {
         this.title = title;
         this.year_published = year_published;
-        this.publisher = publisher;
-        publisher_name = publisher.getName();
-        authoring_entity_name = authoring_entity.getName();
     }//end of overloaded constructor
 
     public String getTitle() {
@@ -79,12 +72,4 @@ public class Books {
     public void setYear_published(int year_published) {
         this.year_published = year_published;
     } //end of setYear_published
-
-    public Publishers getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(Publishers publisher) {
-        this.publisher = publisher;
-    }
 }

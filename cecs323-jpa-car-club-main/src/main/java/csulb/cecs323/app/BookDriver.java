@@ -175,25 +175,6 @@ public class BookDriver {
       return choice;
    }
 
-   private static int acquireChoice() {
-      int choice;
-
-      if(!scan.hasNextInt()){
-         System.out.println("ERROR: Invalid year. Please enter digits to represent the year the book was published:");
-         System.out.println("Please enter the publication year (YYYY):");
-         return acquireYear();
-      }
-      choice = scan.nextInt();
-      int length = String.valueOf(choice).length();
-      if(length != 4){
-         System.out.println("ERROR: Invalid year. Year must be of the form YYYY");
-         System.out.println("Please enter the publication year (YYYY):");
-         return acquireYear();
-      }
-
-      return choice;
-   }
-
    // TODO: Implement all these functions
    // TODO: Implement relationship between new book and authoring_entity, and new book and Publisher
    private static Books addNewBook() {
