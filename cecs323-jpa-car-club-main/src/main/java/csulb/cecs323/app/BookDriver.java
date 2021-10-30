@@ -86,8 +86,10 @@ public class BookDriver {
          switch(choice){
             case 1:
                booksList.add(addNewBook());
+               bookdriver.createEntity(booksList);
             case 2:
                publishersList.add(addNewPublisher());
+               bookdriver.createEntity(publishersList);
             case 3:
                displayBookInfo();
             case 4:
@@ -165,44 +167,60 @@ public class BookDriver {
       return true;
    }
 
+   // TODO: Implement all these functions
+   // TODO: Implement relationship between new book and authoring_entity
+   private static Books addNewBook() {
+      Books book = new Books();
+
+      System.out.println("Please enter the title of this new book:");
+      String title = scan.nextLine();
+      while(!isValidTitle(title)){
+         System.out.println("ERROR: Invalid title. Title must be less than 64 characters.");
+         System.out.println("Please enter the title of this new book:");
+         title = scan.nextLine();
+      }
+
+      return new Books();
+   }
+
+   /* TODO: Make sure name is not used twice (primary key constraint) and add code to show relationship
+      TODO: between a publisher and their book(s). Change error outputs to reflect what the error is */
    private static Publishers addNewPublisher(){
       Publishers publisher = new Publishers();
-      System.out.println("Enter a name for the new publisher (Less than 30 Characters): ");
+      System.out.println("Enter a name for the new publisher (Less than 30 Characters):");
       String name = scan.nextLine();
 
       while(!isValidName(name)){
          System.out.println("ERROR: Invalid input. Try again...");
+         System.out.println("Enter a name for the new publisher (Less than 30 Characters): ");
          name = scan.nextLine();
       }
 
       publisher.setName(name);
 
-      System.out.println("Enter a phone number for the publisher (At least 10 digits): ");
+      System.out.println("Enter a phone number for the publisher (At least 10 digits):");
       String phone = scan.next();
 
       // Regular expression to see if string contains integers
       while(!isValidPhone(phone)){
          System.out.println("ERROR: Invalid input. Try again...");
+         System.out.println("Enter a phone number for the publisher (At least 10 digits):");
          phone = scan.next();
       }
 
       publisher.setPhone(phone);
 
-      System.out.println("Enter an email for the publisher (At most 64 characters): ");
+      System.out.println("Enter an email for the publisher (At most 64 characters):");
       String email = scan.next();
 
       // Regular expression to see if string contains integers
       while(!isValidEmail(email)){
          System.out.println("ERROR: Invalid input. Try again...");
+         System.out.println("Enter an email for the publisher (At most 64 characters):");
          email = scan.next();
       }
       publisher.setEmail(email);
       return publisher;
-   }
-
-   // TODO: Implement all these functions
-   private static Books addNewBook() {
-      return new Books();
    }
 
    private static void displayBookInfo() {
@@ -299,6 +317,10 @@ public class BookDriver {
       }
 
       return true;
+   }
+
+   private static boolean isValidTitle(String title) {
+
    }
 
 } // End of CarClub class
