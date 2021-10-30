@@ -68,6 +68,9 @@ public class BookDriver {
       // Create an instance of CarClub and store our new EntityManager as an instance variable.
       BookDriver bookdriver = new BookDriver(manager);
 
+      List<Books> booksList = new ArrayList<>();
+      List<Publishers> publishersList = new ArrayList<>();
+
 
       // Any changes to the database need to be done within a transaction.
       // See: https://en.wikibooks.org/wiki/Java_Persistence/Transactions
@@ -75,12 +78,34 @@ public class BookDriver {
       LOGGER.fine("Begin of Transaction");
       EntityTransaction tx = manager.getTransaction();
 
+      int choice = 0;
+
+      while(choice != 9){
+         choice = menu();
+
+         switch(choice){
+            case 1:
+               booksList.add(addNewBook());
+            case 2:
+               publishersList.add(addNewPublisher());
+            case 3:
+               displayBookInfo();
+            case 4:
+               displayPublisherInfo();
+            case 5:
+               displayWritingGroupInfo();
+            case 6:
+               deleteBook();
+            case 7:
+               updateBook();
+            case 8:
+               displayAllPrimaryKeys();
+            case 9:
+               break;
+         }
+      }
+
       tx.begin();
-
-      List<Publishers> publishersList = new ArrayList<>();
-
-      publishersList.add(newPublisher());
-      bookdriver.createEntity(publishersList);
 
       // Commit the changes so that the new data persists and is visible to other users.
       tx.commit();
@@ -109,15 +134,38 @@ public class BookDriver {
       }
    } // End of createEntity member method
 
-   public void menu() {
+   private static int menu() {
       System.out.println("Welcome to the Books database");
       System.out.println("What would you like to do? (Choose an option)");
       System.out.println("1. Add a new book \n2. Add a new publisher \n3. List information about a book");
       System.out.println("4. List information about a publisher \n5.List information about a writing group");
       System.out.println("6.Delete a book \n7. Update a book \n8. List all primary keys within the database \n9. Quit");
+      int choice = 0;
+
+      if(!scan.hasNextInt()){
+         System.out.println("ERROR: Incorrect input. Please enter a valid value for your choice (1-9): ");
+      }
+      else{
+         choice = scan.nextInt();
+      }
+
+      if(!isValidChoice(choice)){
+         System.out.println("ERROR: Incorrect input. Please enter a valid value for your choice (1-9): ");
+         return menu();
+      }
+
+      return choice;
    }
 
-   public static Publishers newPublisher(){
+   private static Boolean isValidChoice(int choice){
+      if(choice >= 9 || choice <= 0){
+         return false;
+      }
+
+      return true;
+   }
+
+   private static Publishers addNewPublisher(){
       Publishers publisher = new Publishers();
       System.out.println("Enter a name for the new publisher (Less than 30 Characters): ");
       String name = scan.nextLine();
@@ -152,6 +200,30 @@ public class BookDriver {
       return publisher;
    }
 
+   // TODO: Implement all these functions
+   private static Books addNewBook() {
+      return new Books();
+   }
+
+   private static void displayBookInfo() {
+   }
+
+   private static void displayPublisherInfo() {
+   }
+
+   private static void displayWritingGroupInfo() {
+   }
+
+   private static void deleteBook() {
+   }
+
+   private static void updateBook() {
+   }
+
+   private static void displayAllPrimaryKeys() {
+   }
+
+
    private static boolean isValidName(String name) {
       if(name.length() >= 80 || name.isEmpty()) {
          return false;
@@ -159,7 +231,7 @@ public class BookDriver {
       return true;
    }
 
-   public static boolean isValidPhone(String phone) {
+   private static boolean isValidPhone(String phone) {
       boolean isValid = true;
 
       int hyphenCount = 0;
