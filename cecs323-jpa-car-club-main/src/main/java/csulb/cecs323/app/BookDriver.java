@@ -20,6 +20,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
@@ -50,6 +51,9 @@ public class BookDriver {
     */
    private static final Logger LOGGER = Logger.getLogger(BookDriver.class.getName());
 
+   /**
+    *
+    */
    private static Scanner scan = new Scanner(System.in);
 
    /**
@@ -72,29 +76,33 @@ public class BookDriver {
       List<Publishers> publishersList = new ArrayList<>();
       List<Writing_groups> writingGroupsList = new ArrayList<>();
 
-
-
       // Any changes to the database need to be done within a transaction.
       // See: https://en.wikibooks.org/wiki/Java_Persistence/Transactions
 
       LOGGER.fine("Begin of Transaction");
-      EntityTransaction tx = manager.getTransaction();
+      EntityTransaction tx;
 
       int choice = 0;
 
-      while(choice != 9){
+      while(choice != 11){
          choice = menu();
 
          switch(choice){
             case 1:
+               tx = manager.getTransaction();
+               tx.begin();
                System.out.println("\nPlease fill out the following prompts to add a new Book to the database");
                booksList.add(addNewBook());
                bookdriver.createEntity(booksList);
+               tx.commit();
                break;
             case 2:
+               tx = manager.getTransaction();
+               tx.begin();
                System.out.println("\nPlease fill out the following prompts to add a new Publisher to the database");
                publishersList.add(addNewPublisher());
                bookdriver.createEntity(publishersList);
+               tx.commit();
                break;
             case 3:
                System.out.println("What type of authoring instance would you like to add?");
@@ -117,29 +125,33 @@ public class BookDriver {
                displayBookInfo();
                break;
             case 4:
-               displayPublisherInfo();
+               //addAuthorToExistingAdHocTeam();
+               //TODO :: Add an individual author to an existing Ad Hoc Team
                break;
             case 5:
-               displayWritingGroupInfo();
+               displayBookInfo();
                break;
             case 6:
-               deleteBook();
+               displayPublisherInfo();
                break;
             case 7:
-               updateBook();
+               displayWritingGroupInfo();
                break;
             case 8:
-               displayAllPrimaryKeys();
+               deleteBook();
                break;
             case 9:
+               updateBook();
+               break;
+            case 10:
+               displayAllPrimaryKeys();
+               break;
+            case 11:
+               System.out.println("Exiting program...");
                break;
          }
       }
 
-      tx.begin();
-
-      // Commit the changes so that the new data persists and is visible to other users.
-      tx.commit();
       LOGGER.fine("End of Transaction");
 
    } // End of the main method
@@ -161,7 +173,7 @@ public class BookDriver {
       // generate a value.  So the previous for loop will not show a value for the ID.  But
       // now that the Entity has been persisted, JPA has generated the ID and filled that in.
       for (E next : entities) {
-         LOGGER.info("Persisted object after flush (non-null id): " + next);
+         LOGGER.info("Persisted object after flush (non-null id): " + next + "\n");
       }
    } // End of createEntity member method
 
@@ -170,25 +182,25 @@ public class BookDriver {
    // =========================================================
 
    private static int menu() {
-      System.out.println("Welcome to the Books database");
+      System.out.println("\nWelcome to the Books database");
       System.out.println("What would you like to do? (Choose an option)");
       System.out.println("\t1. Add a new book \n\t2. Add a new publisher \n\t3. Add a new Authoring instance");
       System.out.println("\t4. Add an individual author to an existing Ad Hoc Team \n\t5. List information about a book");
       System.out.println("\t6. List information about a publisher \n\t7. List information about a writing group");
       System.out.println("\t8. Delete a book \n\t9. Update a book \n\t10. List all primary keys within the database \n\t11. Quit");
       System.out.print("Your selection: ");
-      String choiceString = scan.nextLine();
       int choice;
-      // = acquireChoice()
       try{
-         choice = Integer.parseInt(choiceString);
-      }catch (NumberFormatException e){
-         System.out.println("\nERROR: Incorrect input. Please enter a valid integer value for your choice (1-9)");
+         choice = scan.nextInt();
+         scan.nextLine();
+      }catch(InputMismatchException e){
+         scan.nextLine();
+         System.out.println("\nERROR: Incorrect input. Please enter a valid integer value for your choice (1-11)");
          return menu();
       }
 
       if(!isValidChoice(choice)){
-         System.out.println("\nERROR: Incorrect input. Please enter a valid integer value for your choice (1-9)");
+         System.out.println("\nERROR: Incorrect input. Please enter a valid integer value for your choice (1-11)");
          return menu();
       }
 
@@ -222,37 +234,37 @@ public class BookDriver {
       TODO: between a publisher and their book(s). Change error outputs to reflect what the error is */
    private static Publishers addNewPublisher(){
       Publishers publisher = new Publishers();
-      System.out.println("Enter a name for the new publisher (Less than 30 Characters):");
+      System.out.print("Enter a name for the new publisher (Less than 30 Characters): ");
       String name = scan.nextLine();
 
       while(!isValidName(name)){
-         System.out.println("ERROR: Invalid input. Try again...");
+         System.out.println("ERROR: Invalid input. Try again...\n");
          System.out.print("Enter a name for the new publisher (Less than 30 Characters): ");
          name = scan.nextLine();
       }
 
       publisher.setName(name);
 
-      System.out.print("Enter a phone number for the publisher (At least 10 digits):");
-      String phone = scan.next();
+      System.out.print("Enter a phone number for the publisher (At least 10 digits): ");
+      String phone = scan.nextLine();
 
       // Regular expression to see if string contains integers
       while(!isValidPhone(phone)){
-         System.out.println("\nERROR: Invalid input. Try again...");
+         System.out.println("ERROR: Invalid input. Try again...\n");
          System.out.print("Enter a phone number for the publisher (At least 10 digits): ");
-         phone = scan.next();
+         phone = scan.nextLine();
       }
 
       publisher.setPhone(phone);
 
       System.out.print("Enter an email for the publisher (At most 64 characters): ");
-      String email = scan.next();
+      String email = scan.nextLine();
 
       // Regular expression to see if string contains integers
       while(!isValidEmail(email)){
-         System.out.println("\nERROR: Invalid input. Try again...");
+         System.out.println("ERROR: Invalid input. Try again...\n");
          System.out.print("Enter an email for the publisher (At most 64 characters): ");
-         email = scan.next();
+         email = scan.nextLine();
       }
       publisher.setEmail(email);
       return publisher;
@@ -284,10 +296,11 @@ public class BookDriver {
       }
       writing_group.setHead_writer(headWriter);
       System.out.println("Please enter a year formed:");
-      int yearFormed = scan.nextInt();
-      while(!isValidYear(yearFormed)) {
+      String yearFormedString = scan.nextLine();
+      int yearFormed = 0;
+      while(!isValidYear(yearFormedString)) {
          System.out.println("That is not a valid year.");
-         yearFormed = scan.nextInt();
+         yearFormed = Integer.parseInt(yearFormedString);
       }
       writing_group.setYear_formed(yearFormed);
 
@@ -312,7 +325,7 @@ public class BookDriver {
 
    private static void displayPublisherInfo() {
       System.out.println("Enter the name of the publisher: ");
-      String userInput = scan.next();
+      String userInput = scan.nextLine();
 
       List<Publishers> publishers = entityManager.createNativeQuery("SELECT * FROM PUBLISHERS p", Publishers.class).getResultList();
       for(int i = 0; i < publishers.size(); i++) {
@@ -356,27 +369,29 @@ public class BookDriver {
          Books bookToUpdate = books.get(i);
          if (bookToUpdate.getTitle().toLowerCase().equals(userInput.toLowerCase())) {
             System.out.println("What do you wish to update about that book?");
-            System.out.println("1.Title \n2.ISBN \n3. Year published");
-            System.out.println("4. Authoring entity name \n5. Publisher name");
+            System.out.println("\t1.Title \n\t2.ISBN \n\t3. Year published");
+            System.out.println("\t4. Authoring entity name \n\t5. Publisher name");
             int updateBookMenuOption = scan.nextInt(); //TODO :: set up isnextInt() for this
             switch(updateBookMenuOption) {
                case 1:
-                  System.out.println("Enter a new title for the book:");
+                  System.out.println("Enter a new title for the book: ");
                   String newBookName = scan.next();
                   bookToUpdate.setTitle(newBookName);
                   break;
                case 2:
-                  System.out.println("Enter a new ISBN for the book:");
+                  System.out.println("Enter a new ISBN for the book: ");
                   String newISBN = scan.next();
                   bookToUpdate.setISBN(newISBN); //TODO :: check for valid ISBN
                   break;
                case 3:
-                  System.out.println("Enter a new year published for the book:");
-                  int newYearPublished = scan.nextInt();
-                  while(!isValidYear(newYearPublished)) {
+                  System.out.println("Enter a new year published for the book: ");
+                  String newYearPublishedString = scan.nextLine();
+                  while(!isValidYear(newYearPublishedString)) {
                      System.out.println("Sorry, that is not a valid year.");
-                     newYearPublished = scan.nextInt();
+                     newYearPublishedString = scan.nextLine();
                   }
+                  int newYearPublished = Integer.parseInt(newYearPublishedString);
+
                   bookToUpdate.setYear_published(newYearPublished);
                   break;
                case 4:
@@ -425,21 +440,31 @@ public class BookDriver {
    // VALIDATION FUNCTIONS FOR INPUTS BELOW
    // =========================================================
 
-   private static Boolean isValidChoice(int choice){
-      if(choice >= 10 || choice <= 0){
+
+   private static boolean isValidChoice(int choice){
+      if(choice > 11 || choice <= 0){
          return false;
       }
       return true;
    }
 
    private static boolean isValidTitle(String title) {
-      if(title.length() >= 64 || title.isEmpty()) {
+      if(title.length() > 64 || title.isEmpty()) {
          return false;
       }
       return true;
    }
 
-   private static boolean isValidYear(int year){
+   private static boolean isValidYear(String yearString){
+      int year;
+      try{
+         year = Integer.parseInt(yearString);
+      }catch(NumberFormatException e){
+         scan.nextLine();
+         System.out.println("\nERROR: Incorrect input. Please enter a valid integer value for your choice (1-11)");
+         return false;
+      }
+
       if(String.valueOf(year).length() != 4 || year < 1454 || year > 2021) {
          return false;
       }
@@ -484,7 +509,7 @@ public class BookDriver {
 
       if (phone != null) {
          if(phone.length() < 10 || phone.length() > 24){
-            System.out.println("A phone number includes at least 10 digits or you have entered one that is too long");
+            System.out.println("A phone number includes at least 10 digits or more. You have entered one that is too long");
             return false;
          }
          for (char c : phone.toCharArray()) {
@@ -522,7 +547,7 @@ public class BookDriver {
    }
 
    private static boolean isValidEmail(String email) {
-      if(email == null){
+      if(email.isEmpty()){
          System.out.println("Email can not be empty");
          return false;
       }
